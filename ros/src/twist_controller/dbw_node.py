@@ -85,9 +85,9 @@ class DBWNode(object):
 
         ## Output ##
 
-        self.throttle = 0
-        self.brake = 0
-        self.steering = 0
+        self.Throttle = 0
+        self.Brake = 0
+        self.Steering = 0
 
         #### Calling the control function of the Class controller using the function "loop" ####
 
@@ -114,19 +114,19 @@ class DBWNode(object):
             #### Finding the throttle, brake and steering values ####
 
             if all(i is not None for i in [self.dbw_enabled, self.linear_velocity, self.current_velocity]):
-                self.throttle, self.brake, self.steer = self.controller.control(self.linear_velocity,
-                                                                                self.angular_velocity,
-                                                                                self.current_velocity,
-                                                                                self.dbw_enabled)
+                self.Throttle, self.Brake, self.Steering = self.controller.control(self.linear_velocity,
+                                                                                   self.angular_velocity,
+                                                                                   self.current_velocity,
+                                                                                   self.dbw_enabled)
 
-            #### Publishing only if the drive by wire is enabled ####
-
-            if self.dbw_enabled:
-                self.publish(self.throttle, self.brake, self.steer)
+            #### Publishing the throttle, brake and steering value only when the drive by wire is enabled ####
+            if dbw_enabled:
+                self.publish(self.Throttle, self.Brake, self.Steering)
 
             rate.sleep()
 
 ##############################################################
+
 
     def publish(self, throttle, brake, steer):
         tcmd = ThrottleCmd()
