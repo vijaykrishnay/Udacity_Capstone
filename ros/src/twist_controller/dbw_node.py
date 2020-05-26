@@ -53,26 +53,80 @@ class DBWNode(object):
         self.brake_pub = rospy.Publisher('/vehicle/brake_cmd',
                                          BrakeCmd, queue_size=1)
 
-        # TODO: Create `Controller` object
-        # self.controller = Controller(<Arguments you wish to provide>)
+#############################################################
 
-        # TODO: Subscribe to all the topics you need to
+        #### Initializing the Controller object ####
+
+        self.controller = Controller(accel_limit,
+                                     brake_deadband,
+                                     decel_limit,
+                                     fuel_capacity,
+                                     max_lat_accel,
+                                     max_steer_angle,
+                                     steer_ratio,
+                                     vehicle_mass,
+                                     wheel_base,
+                                     wheel_radius)
+
+        #### Subscribing to the three topics namely, "/vehicle/dbw_enabled", "/twist_cmd", "/current_velocity" ####
+
+        rospy.Subscriber(Bool, '/vehicle/dbw_enabled', self.dbw_enabled_message, queue_size = 5)
+        rospy.Subscriber(TwistStamped, '/twist_cmd', self.twist_cmd_message, queue_size = 5)
+        rospy.Subscriber(TwistStamped, '/current_velocity', self.current_velocity_message, queue_size = 5)
+
+        #### Initializing necessary parameters if no messages arrives ####
+
+        ## Input ##
+
+        self.dbw_enabled = None
+        self.linear_velocity = None
+        self.angular_velocity = None
+        self.current_velocity = None
+
+        ## Output ##
+
+        self.throttle = 0
+        self.brake = 0
+        self.steering = 0
+
+        #### Calling the control function of the Class controller using the function "loop" ####
 
         self.loop()
+
+    #### Initializing the parameters if the messages arrives ####
+
+    def dbw_enabled_message(self, msg):
+        self.dbw_enabled = msg
+
+    def twist_cmd_message(self, msg):
+        self.linear_velocity = msg.twist.linear.x
+        self.angular_velocity = msg.twist.angular.z
+
+    def current_velocity_message(self, msg):
+        self.current_velocity = msg.twist.linear.x
+
+#############################################################
 
     def loop(self):
         rate = rospy.Rate(50) # 50Hz
         while not rospy.is_shutdown():
-            # TODO: Get predicted throttle, brake, and steering using `twist_controller`
-            # You should only publish the control commands if dbw is enabled
-            # throttle, brake, steering = self.controller.control(<proposed linear velocity>,
-            #                                                     <proposed angular velocity>,
-            #                                                     <current linear velocity>,
-            #                                                     <dbw status>,
-            #                                                     <any other argument you need>)
-            # if <dbw is enabled>:
-            #   self.publish(throttle, brake, steer)
+
+            #### Finding the throttle, brake and steering values ####
+
+            if all(i is not None for i in [self.dbw_enabled, self.linear_velocity, self.current_velocity]):
+                self.throttle, self.brake, self.steer = self.controller.control(self.linear_velocity,
+                                                                                self.angular_velocity,
+                                                                                self.current_velocity,
+                                                                                self.dbw_enabled)
+
+            #### Publishing only if the drive by wire is enabled ####
+
+            if self.dbw_enabled:
+                self.publish(self.throttle, self.brake, self.steer)
+
             rate.sleep()
+
+##############################################################
 
     def publish(self, throttle, brake, steer):
         tcmd = ThrottleCmd()
