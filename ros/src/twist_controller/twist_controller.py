@@ -15,11 +15,11 @@ class Controller(object):
 
         #### PID Controller parameters ####
 
-        Kp = 0
-        Ki = 0
-        Kd = 0
-        mn = 0
-        mx = 0
+        Kp = 1
+        Ki = 1
+        Kd = 1
+        mn = 1
+        mx = 1
 
         #### Initalizing the PID controller using Controller gains, minimum and maximum throttle value ####
 
@@ -27,8 +27,10 @@ class Controller(object):
 
         #### Low Pass Filter parameters ###
 
-        tau = 0
-        ts = 0
+        tau = 1
+        ts = 1
+        
+        min_speed = 0
 
         #### Intialize the low pass filter using time constant (tau) and sample time ####
 
@@ -48,9 +50,9 @@ class Controller(object):
 
         #### Time Initialization ####
 
-        previous_time = rospy.get_time()
+        self.previous_time = rospy.get_time()
 
-        Last_throttle = 0
+        self.Last_throttle = 0
 
         #########################################################################
 
@@ -75,16 +77,17 @@ class Controller(object):
         Velocity_error = linear_velocity - current_velocity
 
         ## Sample time calculation ##
+        
         current_time = rospy.get_time()
-        sample_time = current_time - previous_time
-        previous_time = current_time
+        sample_time = current_time - self.previous_time
+        self.previous_time = current_time
 
         ## Throttle value from PID controller ##
         Throttle = self.PID_controller.step(Velocity_error,sample_time)
-        if (Throttle - Last_throttle) >0.05:
-            Throttle = Last_throttle + 0.05
+        if (Throttle - self.Last_throttle) >0.05:
+            Throttle = self.Last_throttle + 0.05
 
-        Last_throttle = Throttle
+        self.Last_throttle = Throttle
         #### Steering Control ####
 
         Steering = self.Yaw_controller.get_steering(linear_velocity, angular_velocity, current_velocity)
