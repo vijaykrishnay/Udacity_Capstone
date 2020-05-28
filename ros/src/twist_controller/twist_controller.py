@@ -14,12 +14,16 @@ class Controller(object):
         #########################################################################
         
         #### PID Controller parameters ####
-        
-        Kp = 1
+        Kp = 0.6
         Ki = 0.01
-        Kd = 2
+        Kd = 4
         mn = 0
         mx = 1
+#         Kp = 0.5
+#         Ki = 0.01
+#         Kd = 2
+#         mn = 0
+#         mx = 1
         
         #### Initalizing the PID controller using Controller gains, minimum and maximum throttle value ####
         
@@ -83,10 +87,11 @@ class Controller(object):
         
         ## Throttle value from PID controller ##
         Throttle = self.PID_controller.step(Velocity_error,sample_time)
-        if (Throttle - self.Last_throttle) >0.005:
-            Throttle = self.Last_throttle + 0.005
+        if (Throttle - self.Last_throttle) > 0.01:
+            Throttle = self.Last_throttle + 0.01
         
         self.Last_throttle = Throttle
+        
         #### Steering Control ####
         
         Steering = self.Yaw_controller.get_steering(linear_velocity, angular_velocity, current_velocity)
@@ -109,7 +114,7 @@ class Controller(object):
         elif Throttle < 0.1 and Velocity_error < 0:
             Throttle = 0
             Deceleration = abs(max(Velocity_error, self.decel_limit))
-            Brake = min(MAX_BRAKE, (Deceleration * vehicle_mass * wheel_radius))
+            Brake = min(MAX_BRAKE, (Deceleration * self.vehicle_mass * self.wheel_radius))
          
         #########################################################################
        

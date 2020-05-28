@@ -10,25 +10,19 @@ from twist_controller import Controller
 
 '''
 You can build this node only after you have built (or partially built) the `waypoint_updater` node.
-
 You will subscribe to `/twist_cmd` message which provides the proposed linear and angular velocities.
 You can subscribe to any other message that you find important or refer to the document for list
 of messages subscribed to by the reference implementation of this node.
-
 One thing to keep in mind while building this node and the `twist_controller` class is the status
 of `dbw_enabled`. While in the simulator, its enabled all the time, in the real car, that will
 not be the case. This may cause your PID controller to accumulate error because the car could
 temporarily be driven by a human instead of your controller.
-
 We have provided two launch files with this node. Vehicle specific values (like vehicle_mass,
 wheel_base) etc should not be altered in these files.
-
 We have also provided some reference implementations for PID controller and other utility classes.
 You are free to use them or build your own.
-
 Once you have the proposed throttle, brake, and steer values, publish it on the various publishers
 that we have created in the `__init__` function.
-
 '''
 
 class DBWNode(object):
@@ -70,9 +64,9 @@ class DBWNode(object):
 
         #### Subscribing to the three topics namely, "/vehicle/dbw_enabled", "/twist_cmd", "/current_velocity" ####
 
-        rospy.Subscriber(Bool, '/vehicle/dbw_enabled', self.dbw_enabled_message, queue_size = 5)
-        rospy.Subscriber(TwistStamped, '/twist_cmd', self.twist_cmd_message, queue_size = 5)
-        rospy.Subscriber(TwistStamped, '/current_velocity', self.current_velocity_message, queue_size = 5)
+        rospy.Subscriber("/current_velocity", TwistStamped, self.current_velocity_message)
+        rospy.Subscriber("/twist_cmd", TwistStamped, self.twist_cmd_message)
+        rospy.Subscriber("/vehicle/dbw_enabled", Bool, self.dbw_enabled_message)
 
         #### Initializing necessary parameters if no messages arrives ####
 
@@ -120,7 +114,7 @@ class DBWNode(object):
                                                                                    self.dbw_enabled)
 
             #### Publishing the throttle, brake and steering value only when the drive by wire is enabled ####
-            if dbw_enabled:
+            if self.dbw_enabled:
                 self.publish(self.Throttle, self.Brake, self.Steering)
 
             rate.sleep()
