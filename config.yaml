@@ -1,0 +1,46 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.8.36
+    framework: keras
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    python_version: 2.7.12
+batch_size:
+  desc: null
+  value: 32
+beta_1:
+  desc: null
+  value: 0.9
+beta_2:
+  desc: null
+  value: 0.999
+decay:
+  desc: null
+  value: 0.0
+dense_1_size:
+  desc: null
+  value: 1024
+dense_2_size:
+  desc: null
+  value: 1024
+dense_3_size:
+  desc: null
+  value: 512
+epochs:
+  desc: null
+  value: 5
+epsilon:
+  desc: null
+  value: 1.0e-08
+image_size:
+  desc: null
+  value: 224
+lr:
+  desc: null
+  value: 0.001
+num_layers_frozen:
+  desc: null
+  value: 60

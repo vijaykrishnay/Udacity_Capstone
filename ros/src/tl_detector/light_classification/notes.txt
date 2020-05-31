@@ -1,0 +1,62 @@
+
+cd Udacity_Capstone/data/
+
+# level5 engineer training set:
+wget https://www.dropbox.com/s/gp7vtdk8tjo65kc/TLdataset01.zip?dl=0
+unzip TLdataset01.zip?dl=0
+
+
+wget https://www.dropbox.com/s/87xark39qyer8df/TLdataset02.zip?dl=0
+unzip TLdataset02.zip?dl=0
+
+
+mv data01/green/ ./green/
+mv ./green/green/* ./green/
+rmdir ./green/green
+
+mv data01/red/ ./red/
+mv ./red/red/* ./red/
+rmdir ./red/red
+
+
+mv data02/green/ ./green/
+mv ./green/green/* ./green/
+rmdir ./green/green
+
+mv data02/red/ ./red/
+mv ./red/red/* ./red/
+rmdir ./red/red
+
+mv data02/yellow/ ./yellow/
+mv ./yellow/yellow/* ./yellow/
+rmdir ./yellow/yellow
+
+mv data03/green/ ./green/
+mv ./green/green/* ./green/
+rmdir ./green/green
+
+mv data03/red/ ./red/
+mv ./red/red/* ./red/
+rmdir ./red/red
+
+mv data03/yellow/ ./yellow/
+mv ./yellow/yellow/* ./yellow/
+rmdir ./yellow/yellow
+
+rmdir data01
+rmdir data02
+rmdir data03
+
+mkdir tl_engineer5
+mv ./green ./tl_engineer5/green
+mv ./red ./tl_engineer5/red
+mv ./yellow ./tl_engineer5/yellow
+mv ./unknown ./tl_engineer5/unknown
+
+
+
+cd ..
+# SSD MobileNet
+wget http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_11_06_2017.tar.gz
+
+tar -xzf ssd_mobilenet_v1_coco_11_06_2017.tar.gz
