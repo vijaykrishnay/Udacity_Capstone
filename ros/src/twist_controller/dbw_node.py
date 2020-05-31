@@ -47,10 +47,7 @@ class DBWNode(object):
         self.brake_pub = rospy.Publisher('/vehicle/brake_cmd',
                                          BrakeCmd, queue_size=1)
 
-#############################################################
-
-        #### Initializing the Controller object ####
-
+        # Initializing the Controller object
         self.controller = Controller(accel_limit,
                                      brake_deadband,
                                      decel_limit,
@@ -62,33 +59,27 @@ class DBWNode(object):
                                      wheel_base,
                                      wheel_radius)
 
-        #### Subscribing to the three topics namely, "/vehicle/dbw_enabled", "/twist_cmd", "/current_velocity" ####
-
+        # Subscribing to the three topics namely, "/vehicle/dbw_enabled", "/twist_cmd", "/current_velocity"
         rospy.Subscriber("/current_velocity", TwistStamped, self.current_velocity_message)
         rospy.Subscriber("/twist_cmd", TwistStamped, self.twist_cmd_message)
         rospy.Subscriber("/vehicle/dbw_enabled", Bool, self.dbw_enabled_message)
 
-        #### Initializing necessary parameters if no messages arrives ####
-
-        ## Input ##
-
+        #### Initializing necessary parameters if no messages arrives
+        # Input
         self.dbw_enabled = None
         self.linear_velocity = None
         self.angular_velocity = None
         self.current_velocity = None
 
-        ## Output ##
+        # Output
+        self.throttle = 0
+        self.brake = 0
+        self.steering = 0
 
-        self.Throttle = 0
-        self.Brake = 0
-        self.Steering = 0
-
-        #### Calling the control function of the Class controller using the function "loop" ####
-
+        # Calling the control function of the Class controller using the function "loop" 
         self.loop()
 
-    #### Initializing the parameters if the messages arrives ####
-
+    # Initializing the parameters if the messages arrives ####
     def dbw_enabled_message(self, msg):
         self.dbw_enabled = msg
 
@@ -99,28 +90,26 @@ class DBWNode(object):
     def current_velocity_message(self, msg):
         self.current_velocity = msg.twist.linear.x
 
-#############################################################
-
     def loop(self):
+        """
+        Node main loop
+        """
+
         rate = rospy.Rate(50) # 50Hz
         while not rospy.is_shutdown():
 
-            #### Finding the throttle, brake and steering values ####
-
+            # Finding the throttle, brake and steering values
             if all(i is not None for i in [self.dbw_enabled, self.linear_velocity, self.current_velocity]):
-                self.Throttle, self.Brake, self.Steering = self.controller.control(self.linear_velocity,
+                self.throttle, self.brake, self.steering = self.controller.control(self.linear_velocity,
                                                                                    self.angular_velocity,
                                                                                    self.current_velocity,
                                                                                    self.dbw_enabled)
 
-            #### Publishing the throttle, brake and steering value only when the drive by wire is enabled ####
+            # Publishing the throttle, brake and steering value only when the drive by wire is enabled
             if self.dbw_enabled:
-                self.publish(self.Throttle, self.Brake, self.Steering)
+                self.publish(self.throttle, self.brake, self.steering)
 
             rate.sleep()
-
-##############################################################
-
 
     def publish(self, throttle, brake, steer):
         tcmd = ThrottleCmd()
