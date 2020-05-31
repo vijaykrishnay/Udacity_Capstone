@@ -36,4 +36,6 @@ class TLClassifier(object):
             traffic_light_clor = TrafficLight.YELLOW
         elif prediction == 3:
             traffic_light_clor = TrafficLight.UNKNOWN
+        rospy.loginfo("TL Pred: {}".format(prediction))
+        rospy.loginfo("TL Color: {}".format(traffic_light_clor))
         return traffic_light_clor

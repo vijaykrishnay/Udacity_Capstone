@@ -74,6 +74,7 @@ class TLDetector(object):
         """
         self.has_image = True
         self.camera_image = msg
+        rospy.loginfo("Processing traffic lights")
         light_wp, state = self.process_traffic_lights()
 
         '''
@@ -122,6 +123,7 @@ class TLDetector(object):
         cv_image = cv2.resize(cv_image, (224, 224))
         
         #Get classification
+        
         return self.light_classifier.get_classification(cv_image)
 
     def process_traffic_lights(self):
@@ -150,6 +152,7 @@ class TLDetector(object):
                     line_wp_idx = temp_wp_idx
 
         if closest_light:
+            rospy.loginfo("Closest light found")
             state = self.get_light_state(closest_light)
             return line_wp_idx, state
         

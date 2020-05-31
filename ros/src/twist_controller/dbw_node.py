@@ -84,6 +84,7 @@ class DBWNode(object):
         self.dbw_enabled = msg
 
     def twist_cmd_message(self, msg):
+        rospy.loginfo("Recvd twist")
         self.linear_velocity = msg.twist.linear.x
         self.angular_velocity = msg.twist.angular.z
 
