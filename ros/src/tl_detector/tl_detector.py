@@ -102,7 +102,7 @@ class TLDetector(object):
         Returns:
             int: index of the closest waypoint in self.waypoints
         """
-        #TODO implement
+        
         if all(i is not None for i in [self.pose and self.waypoint_tree]):
             closest_idx = self.waypoint_tree.query([x, y],1)[1]
         return closest_idx
@@ -118,11 +118,11 @@ class TLDetector(object):
         #     self.prev_light_loc = None
         #     return False
 
-        # cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
-
-        # #Get classification
-        # return self.light_classifier.get_classification(cv_image)
-        return light.state
+        cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+        cv_image = cv2.resize(cv_image, (224, 224))
+        
+        #Get classification
+        return self.light_classifier.get_classification(cv_image)
 
     def process_traffic_lights(self):
         """Finds closest visible traffic light, if one exists, and determines its

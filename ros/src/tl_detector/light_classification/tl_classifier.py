@@ -22,10 +22,18 @@ class TLClassifier(object):
         Returns:
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
         """
-        #TODO implement light color prediction
+        # Light color prediction
         image_expanded = np.expand_dims(image, axis=0)
         print("Image shape: ",image_expanded.shape)
         prediction = self.model.predict(image_expanded)
-        print('Prediction: ',prediction)
-
-        return TrafficLight.UNKNOWN
+        print('Prediction: ', prediction)
+        traffic_light_clor = TrafficLight.UNKNOWN
+        if prediction == 0:
+            traffic_light_clor = TrafficLight.GREEN
+        elif prediction == 1:
+            traffic_light_clor = TrafficLight.RED
+        elif prediction == 2:
+            traffic_light_clor = TrafficLight.YELLOW
+        elif prediction == 3:
+            traffic_light_clor = TrafficLight.UNKNOWN
+        return traffic_light_clor
