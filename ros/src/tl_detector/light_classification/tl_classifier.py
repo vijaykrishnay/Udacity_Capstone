@@ -3,6 +3,8 @@ import keras
 import os
 import numpy as np
 from keras.utils.generic_utils import CustomObjectScope
+import tensorflow as tf
+graph = tf.get_default_graph()
 
 
 class TLClassifier(object):
@@ -22,10 +24,25 @@ class TLClassifier(object):
         Returns:
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
         """
-        #TODO implement light color prediction
-        image_expanded = np.expand_dims(image, axis=0)
-        print("Image shape: ",image_expanded.shape)
-        prediction = self.model.predict(image_expanded)
-        print('Prediction: ',prediction)
-
-        return TrafficLight.UNKNOWN
+        with graph.as_default():
+		#TODO implement light color prediction
+		image_expanded = np.expand_dims(image, axis=0)
+		#print("Image shape: ",image_expanded.shape)
+		prediction = self.model.predict(image_expanded)
+		print('Prediction: ',prediction)
+                Color = np.argmax(prediction, axis = 1)
+                #print('Color Index: ',Color)
+		traffic_light_clor = TrafficLight.UNKNOWN
+		if Color[0] == 0:
+		    traffic_light_clor = TrafficLight.RED
+		elif Color[0] == 1:
+		    traffic_light_clor = TrafficLight.YELLOW
+		elif Color[0] == 2:
+		    traffic_light_clor = TrafficLight.GREEN
+		elif Color[0] == 3:
+		    traffic_light_clor = TrafficLight.UNKNOWN
+		# rospy.loginfo("TL Pred: {}".format(prediction))
+		# rospy.loginfo("TL Color: {}".format(traffic_light_clor))
+                # rospy.loginfo("TL Color Index: {}".format(Color))
+        
+        return traffic_light_clor
