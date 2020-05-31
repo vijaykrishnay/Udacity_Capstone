@@ -85,13 +85,13 @@ train_datagen = ImageDataGenerator(
 test_datagen = ImageDataGenerator(rescale=1./255)
 
 test_generator = test_datagen.flow_from_directory(
-    dataTL+'train',
+    dataTL+'test',
     target_size=(config.image_size, config.image_size),
     batch_size=1,
 )
 
 train_generator = train_datagen.flow_from_directory(
-        dataTL+'test',
+        dataTL+'train',
         target_size=(config.image_size, config.image_size),
         batch_size=config.batch_size,
         class_mode='categorical')
@@ -145,3 +145,5 @@ print(classification_report(test_generator.classes, predicted_class_indices))
 
 # results.to_csv(dataBaseFolder + 'results_baseline.csv',index=False)
 
+print(train_generator.class_indices)
+print(validation_generator.class_indices)

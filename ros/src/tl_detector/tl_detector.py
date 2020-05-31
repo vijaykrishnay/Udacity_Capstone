@@ -29,6 +29,7 @@ class TLDetector(object):
         self.last_state = TrafficLight.UNKNOWN
         self.last_wp = -1
         self.state_count = 0
+        self.pred_count = 0
 
         '''
         /vehicle/traffic_lights provides you with the location of the traffic light in 3D map space and
@@ -74,7 +75,7 @@ class TLDetector(object):
         """
         self.has_image = True
         self.camera_image = msg
-        rospy.loginfo("Processing traffic lights")
+#         rospy.loginfo("Processing traffic lights")
         light_wp, state = self.process_traffic_lights()
 
         '''
@@ -123,8 +124,14 @@ class TLDetector(object):
         cv_image = cv2.resize(cv_image, (224, 224))
         
         #Get classification
+        light_id = self.light_classifier.get_classification(cv_image)
         
-        return self.light_classifier.get_classification(cv_image)
+#         # Saving the image
+#         self.pred_count += 1
+#         file_name = '/home/workspace/out_imgs/img_{}_{}.png'.format(self.pred_count, light_id)
+#         cv2.imwrite(file_name, cv_image)
+        
+        return light_id
 
     def process_traffic_lights(self):
         """Finds closest visible traffic light, if one exists, and determines its
@@ -152,7 +159,7 @@ class TLDetector(object):
                     line_wp_idx = temp_wp_idx
 
         if closest_light:
-            rospy.loginfo("Closest light found")
+#             rospy.loginfo("Closest light found")
             state = self.get_light_state(closest_light)
             return line_wp_idx, state
         
