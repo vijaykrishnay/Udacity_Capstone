@@ -10,6 +10,7 @@ from light_classification.tl_classifier import TLClassifier
 import tf
 import cv2
 import yaml
+import os
 
 from scipy.spatial import KDTree
 
@@ -52,6 +53,9 @@ class TLDetector(object):
         self.bridge = CvBridge()
         self.light_classifier = TLClassifier()
         self.listener = tf.TransformListener()
+        
+        self.out_images_debug_path = '/home/workspace/out_imgs'
+        os.makedirs(self.out_images_debug_path)
 
         rospy.spin()
 
@@ -123,12 +127,23 @@ class TLDetector(object):
         cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
         cv_image = cv2.resize(cv_image, (224, 224))
         
+        if(not self.has_image):
+            self.prev_light_loc = None
+            return TrafficLight.UNKNOWN
+
+        cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+        cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+        cv_image = cv2.resize(cv_image, (224, 224))
+        
         #Get classification
         light_id = self.light_classifier.get_classification(cv_image)
         
+        print('Predicted State: ', light_id)
+        print('Actual State: ', light.state)
+
 #         # Saving the image
 #         self.pred_count += 1
-#         file_name = '/home/workspace/out_imgs/img_{}_{}.png'.format(self.pred_count, light_id)
+#         file_name = os.path.join(self.out_images_debug_path, 'img_{}_{}.png'.format(self.pred_count, light_id))
 #         cv2.imwrite(file_name, cv_image)
         
         return light_id
@@ -161,6 +176,7 @@ class TLDetector(object):
         if closest_light:
 #             rospy.loginfo("Closest light found")
             state = self.get_light_state(closest_light)
+            print('State: ',state)
             return line_wp_idx, state
         
         return -1, TrafficLight.UNKNOWN

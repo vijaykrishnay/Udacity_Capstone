@@ -119,6 +119,7 @@ class WaypointUpdater(object):
 
     def traffic_cb(self, msg):
         if self.stopline_wp_idx != msg.data:
+	    rospy.logwarn("Light: idx = {}, old idx = {}".format(msg.data,self.stopline_wp_idx))
             self.stopline_wp_idx = msg.data
 
 
