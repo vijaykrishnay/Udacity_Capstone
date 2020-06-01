@@ -138,8 +138,18 @@ class TLDetector(object):
         light_id = self.light_classifier.get_classification(cv_image)
         print("Pred time: ", time.time() - t0)
         
-        print('Predicted State: ', light_id)
-        print('Actual State: ', light.state)
+        def get_light_text(id):
+            if id == TrafficLight.GREEN:
+                return "GREEN"
+            elif id == TrafficLight.RED:
+                return "RED"
+            elif id == TrafficLight.UNKNOWN:
+                return "UNKNOWN"
+            elif id == TrafficLight.YELLOW:
+                return "YELLOW"
+
+        print('Predicted State: ', get_light_text(light_id))
+        print('Actual State: ', get_light_text(light.state))
 
 #         # Saving the image
 #         self.pred_count += 1
