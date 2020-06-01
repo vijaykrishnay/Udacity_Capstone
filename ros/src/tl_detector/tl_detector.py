@@ -11,6 +11,7 @@ import tf
 import cv2
 import yaml
 import os
+import time
 
 from scipy.spatial import KDTree
 
@@ -133,7 +134,9 @@ class TLDetector(object):
         cv_image = cv_image/255.
 
         #Get classification
+        t0 = time.time()
         light_id = self.light_classifier.get_classification(cv_image)
+        print("Pred time: ", time.time() - t0)
         
         print('Predicted State: ', light_id)
         print('Actual State: ', light.state)
@@ -159,13 +162,14 @@ class TLDetector(object):
         stop_line_positions = self.config['stop_line_positions']
         if(self.pose):
             car_wp_idx = self.get_closest_waypoint(self.pose.pose.position.x, self.pose.pose.position.y)
-            diff = len(self.waypoints.waypoints)
+            diff = 50 # TODO: Replace hardcoding with param
             for i, light in enumerate(self.lights):
                 # Get stop line waypoint index
                 line = stop_line_positions[i]
                 temp_wp_idx = self.get_closest_waypoint(line[0], line[1])
                 d = temp_wp_idx - car_wp_idx
                 if d >= 0 and d < diff:
+                    print("Diff, d:", diff, d)
                     diff = d 
                     closest_light = light 
                     line_wp_idx = temp_wp_idx
