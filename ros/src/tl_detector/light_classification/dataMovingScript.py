@@ -9,11 +9,12 @@ import shutil
 import os
 import numpy as np
 
-dataBaseFolder = '/home/workspace/Udacity_Capstone/data/'
+# dataBaseFolder = '/home/workspace/Udacity_Capstone/data/'
+dataBaseFolder = 'data/'
 dataTL = dataBaseFolder + 'tl_engineer5/'
 
 #it had the classes in the folder so each folder was /green, /yellow, etc.
-folders = os.listdir(dataTL)
+folders = ['green', 'red', 'unknown', 'yellow'] #os.listdir(dataTL)
 for folder in folders:
     os.makedirs(dataTL +'train/' + folder)
     os.makedirs(dataTL +'val/' + folder)
