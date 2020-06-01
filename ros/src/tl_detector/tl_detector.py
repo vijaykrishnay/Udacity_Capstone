@@ -173,7 +173,7 @@ class TLDetector(object):
         if closest_light:
 #             rospy.loginfo("Closest light found")
             state = self.get_light_state(closest_light)
-            print('State: ',state)
+            # print('State: ',state)
             return line_wp_idx, state
         
         return -1, TrafficLight.UNKNOWN

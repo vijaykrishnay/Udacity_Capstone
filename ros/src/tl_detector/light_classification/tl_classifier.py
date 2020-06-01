@@ -32,7 +32,7 @@ class TLClassifier(object):
         # Convert pred prob to class id
         predicted_class = np.argmax(prediction, axis=1)
 #         print('Prediction: ', prediction)
-        print('Class: ', predicted_class)
+        # print('Class: ', predicted_class)
         
         # Map class id to traffic light id
         traffic_light_clor = TrafficLight.UNKNOWN
