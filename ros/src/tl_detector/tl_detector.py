@@ -129,14 +129,14 @@ class TLDetector(object):
             return TrafficLight.UNKNOWN
         
         cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
-        cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+        # cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
         cv_image = cv2.resize(cv_image, (224, 224))
         cv_image = cv_image/255.
 
         #Get classification
         t0 = time.time()
         light_id = self.light_classifier.get_classification(cv_image)
-        print("Pred time: ", time.time() - t0)
+        # print("Pred time: ", time.time() - t0)
         
         def get_light_text(id):
             if id == TrafficLight.GREEN:
@@ -148,8 +148,8 @@ class TLDetector(object):
             elif id == TrafficLight.YELLOW:
                 return "YELLOW"
 
-        print('Predicted State: ', get_light_text(light_id))
-        print('Actual State: ', get_light_text(light.state))
+        print('Predicted State: \t\t{}'.format(get_light_text(light_id)))
+        print('Actual State: \t\t{}'.format(get_light_text(light.state)))
 
 #         # Saving the image
 #         self.pred_count += 1
