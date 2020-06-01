@@ -8,7 +8,8 @@ import tensorflow as tf
 class TLClassifier(object):
     def __init__(self):
         CWD_PATH = os.getcwd()
-        PATH_TO_h5 = os.path.join(CWD_PATH, 'light_classification', 'model-best.h5')
+        PATH_TO_h5 = os.path.join(CWD_PATH, 'light_classification', 'model-best-lite.h5')
+        # PATH_TO_h5 = os.path.join(CWD_PATH, 'light_classification', 'model-best.h5')
         self.graph = tf.get_default_graph()
         with CustomObjectScope({'relu6': keras.applications.mobilenet.relu6,'DepthwiseConv2D': keras.applications.mobilenet.DepthwiseConv2D}):
             self.model = keras.models.load_model(PATH_TO_h5)
