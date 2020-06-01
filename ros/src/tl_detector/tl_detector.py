@@ -128,8 +128,8 @@ class TLDetector(object):
             self.prev_light_loc = None
             return TrafficLight.UNKNOWN
         
-        cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "rgb8")
-#         cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
+        cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+        cv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
         cv_image = cv2.resize(cv_image, (224, 224))
         cv_image = cv_image/255.
 
