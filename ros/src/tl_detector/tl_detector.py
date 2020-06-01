@@ -55,7 +55,9 @@ class TLDetector(object):
         self.listener = tf.TransformListener()
         
         self.out_images_debug_path = '/home/workspace/out_imgs'
-        os.makedirs(self.out_images_debug_path)
+        if os.path.exists(self.out_images_debug_path):
+            os.removedirs(self.out_images_debug_path)
+            os.makedirs(self.out_images_debug_path)
 
         rospy.spin()
 
