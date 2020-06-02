@@ -13,8 +13,8 @@ class Controller(object):
         
         # PID Controller parameters
         Kp = 0.6
-        Ki = 0.01
-        Kd = 4.
+        Ki = 0.1
+        Kd = 2.
         mn = 0.
         mx = 1.
 
